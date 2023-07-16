@@ -9,20 +9,19 @@ function App() {
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-     if (searchText.length >= 1) {
-       setEmojis((emojis) => {
-         return emojiList.filter((emoji) => {
-           return (
-             emoji.description.toLowerCase().includes(searchText) || 
-             emoji.tags.includes(searchText) ||
-             emoji.aliases.includes(searchText) ||
-             emoji.category.toLowerCase().includes(searchText)
-             )
-           }).slice(0, 15)
-         })
-    } else {
-      setEmojis(emojiList.slice(0, 15))
-    }
+    const setData = setTimeout(() => {
+        setEmojis((emojis) => {
+          return emojiList.filter((emoji) => {
+            return (
+              emoji.description.toLowerCase().includes(searchText) || 
+              emoji.tags.includes(searchText) ||
+              emoji.aliases.includes(searchText) ||
+              emoji.category.toLowerCase().includes(searchText)
+              )
+            }).slice(0, 15)
+          })
+        }, 300);
+      return () => clearTimeout(setData);
   }, [searchText])
 
   const handleChange = (e) => {
