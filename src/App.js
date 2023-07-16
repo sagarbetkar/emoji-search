@@ -1,24 +1,54 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import { Container, Navbar, Form } from 'react-bootstrap';
+
+import emojiList from './emojiList.json';
 import './App.css';
 
 function App() {
+  const [emojis, setEmojis] = useState(emojiList.slice(0, 15));
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+     if (searchText.length >= 1) {
+       setEmojis((emojis) => {
+         return emojiList.filter((emoji) => {
+           return (
+             emoji.description.toLowerCase().includes(searchText) || 
+             emoji.tags.includes(searchText) ||
+             emoji.aliases.includes(searchText) ||
+             emoji.category.toLowerCase().includes(searchText)
+             )
+           }).slice(0, 15)
+         })
+    } else {
+      setEmojis(emojiList.slice(0, 15))
+    }
+  }, [searchText])
+
+  const handleChange = (e) => {
+    setSearchText(searchText => searchText = e.target.value.toLowerCase());
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar bg="dark" data-bs-theme="dark">
+        <Container className="justify-content-center" fluid>
+          <Navbar.Brand>Emoji Search</Navbar.Brand>
+        </Container>
+      </Navbar>
+      <Container>
+        <Form.Control className='my-4' size="lg" type="text" placeholder="Search emojis..." value={searchText} onChange={handleChange} />
+        <ul className='p-0'>
+          {emojis.map((emoji, index) => (
+            <li className='card border border-1 rounded-0 p-2' key={index}>
+              {emoji.emoji}{" "}|{" "}
+              {emoji.description}{" "}|{" "}
+              {emoji.tags.map((tag) => `#${tag}`)}
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </>
   );
 }
 
